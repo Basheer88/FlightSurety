@@ -1,0 +1,24 @@
+npm i openzeppelin-solidity@2.0 --save
+
+npm install --save web3
+
+npm install
+
+ganache-cli -p 8545 -l 9999999 -m -a 40 "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat"
+
+truffle compile
+
+truffle migrate -- reset
+
+npm run dapp
+
+everything should work fine
+
+
+=================
+    "web3": "^1.5.2",
+    "webpack": "^4.35.2",
+    "webpack-cli": "^3.3.6",
+    "webpack-dev-server": "3.7.2",
+    "webpack-node-externals": "1.7.2"
+==================
