@@ -12,6 +12,45 @@ contract FlightSuretyData {
     address private contractOwner;                                      // Account used to deploy contract
     bool private operational = true;                                    // Blocks all state changes throughout the contract if false
     mapping(address => uint256) authorizedContracts;                    // Only Authorized Contracts can call this contract
+    mapping(address => uint256) funds;
+    struct Flight {
+        bool isRegistered;
+        uint8 statusCode;
+        uint256 updatedTimestamp;       
+        address airline;
+        address[] passAddress;
+    }
+    mapping(bytes32 => Flight) private flights;
+
+    //mapping(uint256 => address) private passNum;
+
+    struct AirLine {
+        bool isRegistered;
+        bool isFunded;
+        address airlineAddress;
+        uint256 airlineName;
+    }
+    mapping(address => AirLine) private airlines;
+
+/*    struct Insurance{
+        uint256 insuranceAmount;
+        address passenger;
+        bool    isTaken;
+    }
+    mapping (bytes32 => Insurance) private insurenceList;
+    mapping (bytes32 => address[]) private passengerList;  */
+
+    struct Insurance {
+        bytes32 flightID;
+        uint256 insuranceAmount;
+        address passengerAddress;
+        bool insuranceStatus;
+        bool isTaken;
+    }
+    mapping (address => Insurance) private passenger;
+
+    uint256 public constant insuranceFee = 1 ether;
+
 
     /********************************************************************************************/
     /*                                       EVENT DEFINITIONS                                  */
@@ -91,6 +130,20 @@ contract FlightSuretyData {
         return operational;
     }
 
+    /**
+    * @dev Get Flight registration status
+    *
+    * @return A bool that indicate flight registration status
+    */      
+    function isRegisteredFlight(
+                                    bytes32 flightID
+                                ) 
+                            public 
+                            view 
+                            returns(bool) 
+    {
+        return flights[flightID].isRegistered;
+    }
 
     /**
     * @dev Sets contract operations on/off
@@ -117,25 +170,74 @@ contract FlightSuretyData {
     *
     */   
     function registerAirline
-                            (   
+                            (
+                                address airAddress,
+                                uint256 airName    
                             )
+                            isCallerAuthorized
+                            requireIsOperational
                             external
-                            pure
     {
+        require(!airlines[airAddress].isRegistered, "Airline is already registered.");
+        require(airlines[msg.sender].isRegistered, "Only registered airlines can register new one");
+        airlines[airAddress].airlineAddress = airAddress;
+        airlines[airAddress].airlineName = airName;
+        airlines[airAddress].isRegistered = true;
+        airlines[airAddress].isFunded = false;
     }
 
+   /**
+    * @dev Add a flight to the flights queue
+    *      Can only be called from FlightSuretyApp contract
+    *
+    */   
+    function registerFlight
+                            (
+                                address airline,
+                                bytes32 flightID,
+                                uint256 timeStamp
+                            )
+                            isCallerAuthorized
+                            requireIsOperational
+                            external
+    {
+        require(airlines[airline].isFunded, "Not Funded yet");
+        require(!flights[flightID].isRegistered, "Flight is already registered.");
+        flights[flightID].airline = airline;
+        flights[flightID].updatedTimestamp = timeStamp;
+        flights[flightID].statusCode = 0;
+        flights[flightID].isRegistered = true;
+    }
 
    /**
     * @dev Buy insurance for a flight
     *
     */   
     function buy
-                            (                             
+                            (
+                                bytes32 flightID,
+                                address passengerID,
+                                uint256 recievedinsurence,
+                                uint256 timestamp                             
                             )
+                            isCallerAuthorized
+                            requireIsOperational                            
                             external
                             payable
+                            returns(bool)
     {
-
+        require(passenger[passengerID].flightID == flightID, "is not a passenger in this flight");
+        require(passenger[passengerID].insuranceStatus == false, "You already bought an insurence for current flight.");
+        require(flights[flightID].updatedTimestamp == timestamp, "Different Time Stamp");
+        passenger[passengerID].insuranceAmount = recievedinsurence;
+        passenger[passengerID].passengerAddress = passengerID;
+        passenger[passengerID].insuranceStatus = true;
+        passenger[passengerID].isTaken == false;                 // is taken yet or not
+        
+        // transfer insurance to airline 
+        flights[flightID].airline.transfer(recievedinsurence);
+        flights[flightID].passAddress.push(passengerID);
+        return true;
     }
 
     /**
@@ -143,10 +245,29 @@ contract FlightSuretyData {
     */
     function creditInsurees
                                 (
+                                    bytes32 flightID,
+                                    uint256 amount
                                 )
                                 external
-                                pure
     {
+        //require(contractData.isAirline(_airline), "Airline is not funded");
+        //bytes32 fltKey = contractData.getFlightKey(_airline, _flt, _timestamp);
+        //require(contractData.isRegisteredFlight(fltKey), "Flight is not registered.");
+        //require(msg.value <= 1 ether," more than one ether.");
+        //bool success = contractData.buyInsurance.value(msg.value)(fltKey, _passenger, msg.value);
+
+        for (uint i=0; i < flights[flightID].passAddress.length; i++)
+        {
+            address add =  flights[flightID].passAddress[i];
+            uint256 insu = passenger[add].insuranceAmount;
+            insu = insu.mul(amount);
+            passenger[add].insuranceAmount = insu;
+            //flights[flightID].
+        }
+
+        //return success;
+
+
     }
     
 
@@ -156,10 +277,23 @@ contract FlightSuretyData {
     */
     function pay
                             (
+                                bytes32 flightID,
+                                address passengerAddress
                             )
                             external
-                            pure
+                            payable
     {
+        require(passenger[passengerAddress].flightID == flightID, "is not a passenger in this flight.");
+        require(passenger[passengerAddress].insuranceStatus == true, "You didnt bought an insurence for current flight.");
+        require(passenger[passengerAddress].isTaken == false, "You already Claimed your insurence.");
+        uint amount = passenger[passengerAddress].insuranceAmount;
+        
+        passenger[passengerAddress].insuranceStatus == true;       // reset insurance status
+        passenger[passengerAddress].insuranceAmount = 0;           // reset insurance amount
+        passenger[passengerAddress].isTaken == true;               // claimed the insuance
+        
+        address passengerToTransfer = passenger[passengerAddress].passengerAddress;
+        passengerToTransfer.transfer(amount);                      // transfer insurance to passenger
     }
 
    /**
@@ -168,14 +302,25 @@ contract FlightSuretyData {
     *
     */   
     function fund
-                            (   
+                            (
+                                address airAddress  
                             )
+                            requireIsOperational
                             public
                             payable
     {
+        //require(msg.value >= 10 ether, "Inadaquate funds, require more than or equal 10 ether");
+        require(airlines[airAddress].isRegistered, "AirLine should be registered before getting funded");
+        
+        // Get the current fund then add more funds
+        //uint256 currentFund = funds[airAddress];
+        //currentFund.add(msg.value);
+        airAddress.transfer(msg.value);
+        funds[airAddress] = funds[airAddress].add(msg.value);
+        airlines[airAddress].isFunded = true;
     }
 
-    function getFlightKey
+/*    function getFlightKey
                         (
                             address airline,
                             string memory flight,
@@ -186,7 +331,7 @@ contract FlightSuretyData {
                         returns(bytes32) 
     {
         return keccak256(abi.encodePacked(airline, flight, timestamp));
-    }
+    } */
 
     /**
     * @dev Fallback function for funding smart contract.
@@ -196,7 +341,7 @@ contract FlightSuretyData {
                             external 
                             payable 
     {
-        fund();
+        fund(msg.sender);
     }
 
 

@@ -24,18 +24,22 @@ contract FlightSuretyApp {
     uint8 private constant STATUS_CODE_LATE_TECHNICAL = 40;
     uint8 private constant STATUS_CODE_LATE_OTHER = 50;
 
+    uint256 private counter = 1;            // Registered Airlines Counter 
+
     address private contractOwner;          // Account used to deploy contract
+
+    address[] private airlineAddress = new address[](0);
 
     FlightSuretyData flightSuretyData;      // Pointing to FlightSuretyData contract
 
-    struct Flight {
+/*    struct Flight {
         bool isRegistered;
         uint8 statusCode;
         uint256 updatedTimestamp;        
         address airline;
     }
     mapping(bytes32 => Flight) private flights;
-
+*/
  
     /********************************************************************************************/
     /*                                       FUNCTION MODIFIERS                                 */
@@ -130,13 +134,44 @@ contract FlightSuretyApp {
     *
     */   
     function registerAirline
-                            (   
+                            (
+                                address airAddress,
+                                uint256 airName   
                             )
                             external
-                            pure
                             returns(bool success, uint256 votes)
     {
-        return (success, 0);
+        votes = 0;
+        if(counter >= 4)
+        {
+            flightSuretyData.registerAirline(airAddress, airName);
+            counter.add(1);
+            airlineAddress.push(airAddress);
+            //return (success, 0);
+            return (true, 0);
+        }
+        else
+        {
+            bool vo;
+            // ask for voting
+            for(uint i=1; i<= counter; i++){
+                vo = randVote(airlineAddress[i]);
+                if(vo){
+                    votes.add(1);
+                }
+            }
+            //  require(votes>=(counter/2),"airlines voted to reject you");
+            if(votes>=(counter/2)) {
+                flightSuretyData.registerAirline(airAddress, airName);
+                counter.add(1);
+                airlineAddress.push(airAddress);
+                //return (success, votes);
+                return (true, votes);
+            }
+            else {
+                return (false, votes);
+            }          
+        }
     }
 
 
@@ -145,12 +180,13 @@ contract FlightSuretyApp {
     *
     */  
     function registerFlight
-                                (
-                                )
-                                external
-                                pure
+                            (
+                                bytes32 flightID,
+                                uint256 timeStamp
+                            )
+                            external
     {
-
+        flightSuretyData.registerFlight(msg.sender, flightID, timeStamp);
     }
     
    /**
@@ -189,8 +225,72 @@ contract FlightSuretyApp {
                                             });
 
         emit OracleRequest(index, airline, flight, timestamp);
-    } 
+    }
 
+    // Airlines Voting system and it always return true 
+    function randVote
+                    (
+                        address air
+                    )
+                    internal
+                    view
+                    returns(bool)
+    {
+        uint x = uint(keccak256(abi.encodePacked(now, block.difficulty, air))) % 2;
+        if(x==0){
+            return true;    // // Can be false but We want it to be true always
+        }
+        else{
+            return true;    // Can be false but We want it to be true always 
+        }
+    }
+
+    // to call airlines fund function
+    function fund()
+        public
+        payable
+    {
+        require(msg.value >= 10 ether, "Inadaquate funds, require more than or equal 10 ether.");
+        flightSuretyData.fund.value(msg.value)(msg.sender);
+    }
+
+    // Buy Flight Insurance functions
+    function buy
+                            (
+                                bytes32 _flightID,
+                                uint256 _timestamp
+                            )
+                            external
+                            payable
+                            returns(bool)
+    {
+        require(flightSuretyData.isRegisteredFlight(_flightID),"Flight is not registered.");
+        require(msg.value <= 1 ether," more than one ether.");
+        bool success = flightSuretyData.buy(_flightID, msg.sender, msg.value, _timestamp);
+        return success;
+    }
+
+    // Calculate Credit Insurees
+    function creditInsurees
+                                (
+                                    bytes32 _flightID,
+                                    uint256 amount
+                                )
+                                internal
+    {
+        flightSuretyData.creditInsurees(_flightID, amount);
+    }
+
+    // Pay Function
+    function payInsurance
+                            (
+                                bytes32 _flightID
+                            )
+                            external
+                            payable
+    {
+        flightSuretyData.payInsurance(_flightID, msg.sender);
+    }
 
 // region ORACLE MANAGEMENT
 
@@ -303,7 +403,7 @@ contract FlightSuretyApp {
         }
     }
 
-
+/*
     function getFlightKey
                         (
                             address airline,
@@ -315,7 +415,7 @@ contract FlightSuretyApp {
                         returns(bytes32) 
     {
         return keccak256(abi.encodePacked(airline, flight, timestamp));
-    }
+    }*/
 
     // Returns array of three non-duplicating integers from 0-9
     function generateIndexes
@@ -370,14 +470,66 @@ contract FlightSuretyData {
                             public 
                             pure
                             returns(bool);
+
+    function isRegisteredFlight(
+                                    bytes32 flightID
+                                ) 
+                                public 
+                                view 
+                                returns(bool);
+
     function authorizeContract
                             (
                                 address newContract
                             )
                             external;
+
     function deauthorizeContract
                             (
                                 address delContract
                             )
                             external;
+
+    function registerAirline
+                            (
+                                address airAddress,
+                                uint256 airName    
+                            )
+                            external;
+
+    function registerFlight
+                            (
+                                address airline,
+                                bytes32 flightID,
+                                uint256 timeStamp
+                            )
+                            external;
+
+    function fund           (
+                                address _airline
+                            )
+                            public
+                            payable;
+
+    function buy            (
+                                bytes32 flightID,
+                                address passengerID,
+                                uint256 recievedinsurence,
+                                uint256 timestamp
+                            )
+                            external
+                            payable
+                            returns(bool);
+    
+    function creditInsurees (
+                                bytes32 flightID,
+                                uint256 creditAmount
+                            )
+                            external;
+    function payInsurance   (
+                                bytes32 flighID,
+                                address passenger
+                            )
+                            external
+                            payable;
 }
