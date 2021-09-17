@@ -260,7 +260,7 @@ contract FlightSuretyData {
         {
             address add =  flights[flightID].passAddress[i];
             uint256 insu = passenger[add].insuranceAmount;
-            insu = insu.mul(amount);
+            insu = insu.mul(amount).div(100);
             passenger[add].insuranceAmount = insu;
             //flights[flightID].
         }
@@ -320,18 +320,18 @@ contract FlightSuretyData {
         airlines[airAddress].isFunded = true;
     }
 
-/*    function getFlightKey
-                        (
-                            address airline,
-                            string memory flight,
-                            uint256 timestamp
-                        )
-                        pure
-                        internal
-                        returns(bytes32) 
+    // A function to change flight status code
+    function processFlightStatus
+                                (
+                                    bytes32 flightID,
+                                    uint8 _statusCode
+                                )
+                                requireIsOperational
+                                external
     {
-        return keccak256(abi.encodePacked(airline, flight, timestamp));
-    } */
+        flights[flightID].statusCode = _statusCode;
+    }
+    
 
     /**
     * @dev Fallback function for funding smart contract.

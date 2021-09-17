@@ -196,13 +196,18 @@ contract FlightSuretyApp {
     function processFlightStatus
                                 (
                                     address airline,
-                                    string memory flight,
+                                    bytes32 flight,
                                     uint256 timestamp,
                                     uint8 statusCode
                                 )
                                 internal
-                                pure
     {
+        flightSuretyData.processFlightStatus(flight, statusCode);
+        
+        // if status is 20 then the flight are delayeds
+        if (statusCode == STATUS_CODE_LATE_AIRLINE)
+            creditInsurees(flight, 150);
+        emit flightProcessed(airline, flight, timestamp, statusCode);
     }
 
 
@@ -326,9 +331,11 @@ contract FlightSuretyApp {
     mapping(bytes32 => ResponseInfo) private oracleResponses;
 
     // Event fired each time an oracle submits a response
-    event FlightStatusInfo(address airline, string flight, uint256 timestamp, uint8 status);
+    event FlightStatusInfo(address airline, bytes32 flight, uint256 timestamp, uint8 status);
 
-    event OracleReport(address airline, string flight, uint256 timestamp, uint8 status);
+    event flightProcessed(address airline, bytes32 flight, uint256 timestamp, uint8 statusCode);
+
+    event OracleReport(address airline, bytes32 flight, uint256 timestamp, uint8 status);
 
     // Event fired when flight status request is submitted
     // Oracles track this and if they have a matching index
@@ -377,7 +384,7 @@ contract FlightSuretyApp {
                         (
                             uint8 index,
                             address airline,
-                            string flight,
+                            bytes32 flight,
                             uint256 timestamp,
                             uint8 statusCode
                         )
@@ -532,4 +539,9 @@ contract FlightSuretyData {
                             )
                             external
                             payable;
+    function processFlightStatus(
+                                bytes32 flightID,
+                                uint8 statusCode
+                                )
+                                external;
 }
