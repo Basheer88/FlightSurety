@@ -207,7 +207,9 @@ contract FlightSuretyApp {
         // if status is 20 then the flight are delayeds
         if (statusCode == STATUS_CODE_LATE_AIRLINE)
             creditInsurees(flight, 150);
-        emit flightProcessed(airline, flight, timestamp, statusCode);
+        //emit flightProcessed(airline, flight, timestamp, statusCode);
+        emit FlightStatusInfo(airline, flight, timestamp, statusCode);
+        
     }
 
 
@@ -333,7 +335,7 @@ contract FlightSuretyApp {
     // Event fired each time an oracle submits a response
     event FlightStatusInfo(address airline, bytes32 flight, uint256 timestamp, uint8 status);
 
-    event flightProcessed(address airline, bytes32 flight, uint256 timestamp, uint8 statusCode);
+    //event flightProcessed(address airline, bytes32 flight, uint256 timestamp, uint8 statusCode);
 
     event OracleReport(address airline, bytes32 flight, uint256 timestamp, uint8 status);
 
