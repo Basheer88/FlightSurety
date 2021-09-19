@@ -144,7 +144,7 @@ contract FlightSuretyApp {
         require(flightSuretyData.isAirline(msg.sender), "Requesting Airline is not funded");
         require(flightSuretyData.isRegisteredAirline(airAddress) == false, "Airline already registered");
         votes = 0;
-        if(counter >= 4)
+        if(counter <= 4)
         {
             success = flightSuretyData.registerAirline(airAddress, airName);
             counter.add(1);
