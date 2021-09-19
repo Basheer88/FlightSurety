@@ -69,10 +69,10 @@ contract FlightSuretyData {
         contractOwner = msg.sender;
         authorizedContracts[msg.sender]=1;
 
-        airlines[contractOwner].isRegistered = true;
-        airlines[contractOwner].isFunded = true;
-        airlines[contractOwner].airlineAddress = contractOwner;
-        airlines[contractOwner].airlineName = "Bash";
+        airlines[msg.sender].isRegistered = true;
+        airlines[msg.sender].isFunded = true;
+        airlines[msg.sender].airlineAddress = contractOwner;
+        airlines[msg.sender].airlineName = "Bash";
     }
 
     /********************************************************************************************/
@@ -217,7 +217,7 @@ contract FlightSuretyData {
                             returns (bool)
     {
         require(!airlines[airAddress].isRegistered, "Airline is already registered.");
-        require(airlines[msg.sender].isRegistered, "Only registered airlines can register new one");
+        //require(airlines[msg.sender].isRegistered, "Only registered airlines can register new one");
         airlines[airAddress].airlineAddress = airAddress;
         airlines[airAddress].airlineName = airName;
         airlines[airAddress].isRegistered = true;
