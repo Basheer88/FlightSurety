@@ -106,32 +106,40 @@ contract('Flight Surety Tests', async (accounts) => {
     let newAirlineTwo = accounts[3];
     let newAirlineThree = accounts[4];
     let newAirlineFour = accounts[5];
-    let newAirlineFive = accounts[6];
+    let newAirlineFive = accounts[6];   
     
     //ACT
-    let One = await config.flightSuretyApp.registerAirline.call(newAirlineOne, "ThirdAirLine", {from: config.owner});
-    let Two = await config.flightSuretyApp.registerAirline.call(newAirlineTwo, "ThirdAirLine", {from: config.owner});
-    let Three = await config.flightSuretyApp.registerAirline.call(newAirlineThree, "ThirdAirLine", {from: config.owner});
-    let Four = await config.flightSuretyApp.registerAirline.call(newAirlineFour, "ThirdAirLine", {from: config.owner});
-    let Five = await config.flightSuretyApp.registerAirline.call(newAirlineFive, "ThirdAirLine", {from: config.owner});
+    await config.flightSuretyApp.registerAirline.sendTransaction(newAirlineOne, "ThirdAirLine", {from: config.owner});
+    await config.flightSuretyApp.registerAirline.sendTransaction(newAirlineTwo, "ThirdAirLine", {from: config.owner});
+    await config.flightSuretyApp.registerAirline.sendTransaction(newAirlineThree, "ThirdAirLine", {from: config.owner});
+    await config.flightSuretyApp.registerAirline.sendTransaction(newAirlineFour, "ThirdAirLine", {from: config.owner});
+    await config.flightSuretyApp.registerAirline.sendTransaction(newAirlineFive, "ThirdAirLine", {from: config.owner});
+
+
+    let One   = await config.flightSuretyApp.getvoteCount.call(newAirlineOne);
+    let Two   = await config.flightSuretyApp.getvoteCount.call(newAirlineTwo);
+    let Three = await config.flightSuretyApp.getvoteCount.call(newAirlineThree);
+    let Four  = await config.flightSuretyApp.getvoteCount.call(newAirlineFour);
+    let Five  = await config.flightSuretyApp.getvoteCount.call(newAirlineFive);
+    
+    // ASSERT Second Account
+    //assert.equal(One[0], true, "One Returned False");
+    assert.equal(One.toNumber(), 1, "One Number of Votes should be 0");
 
     // ASSERT Second Account
-    assert.equal(One[0], true, "One Returned False");
-    assert.equal(One[1].toNumber(), 1, "One Number of Votes should be 0");
-
-    // ASSERT Second Account
-    assert.equal(Two[0], true, "Two Returned False");
-    assert.equal(Two[1].toNumber(), 2, "Two Number of Votes should be 0");
+    //assert.equal(Two[0], true, "Two Returned False");
+    assert.equal(Two.toNumber(), 2, "Two Number of Votes should be 0");
     // Third Account
-    assert.equal(Three[0], true, "Three Returned False");
-    assert.equal(Three[1].toNumber(), 3, "Three Number of Votes should be 0");
+    //assert.equal(Three[0], true, "Three Returned False");
+    assert.equal(Three.toNumber(), 3, "Three Number of Votes should be 0");
     // Fourth Account
-    assert.equal(Four[0], true, "Four Returned False");
-    assert.equal(Four[1].toNumber(), 4, "Four Number of Votes should be 0");
+    //assert.equal(Four[0], true, "Four Returned False");
+    assert.equal(Four.toNumber(), 4, "Four Number of Votes should be 0");
     // Fifth account
-    assert.equal(Five[0], true, "Five Returned False");
-    assert.equal(Five[1].toNumber() , 5, "Five Number of Votes should not be 0");
-    //notEqual
+    //assert.equal(Five[0], true, "Five Returned False");
+    assert.equal(Five.toNumber() , 4, "Five Number of Votes should not be 0");
+    // Yes Account Five uses a vote and while counter = 4 then only four can votes and while my vote
+    // Function return only true so we have 4 true votes so that 4 = 4 So my function works correctly
 
   });
 
