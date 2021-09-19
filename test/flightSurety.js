@@ -105,10 +105,11 @@ contract('Flight Surety Tests', async (accounts) => {
     let newAirline = accounts[8];
     
     //ACT
-    let x = await config.flightSuretyApp.registerAirline(newAirline, "ThirdAirLine", {from: config.owner});
-
+    let x = await config.flightSuretyApp.registerAirline.call(newAirline, "ThirdAirLine", {from: config.owner});
+    
     // ASSERT
     assert.equal(x[0], true, "notworking ONE");
+    assert.equal(x[1], 0, "notworking ONE");
 
   });
 
