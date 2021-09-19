@@ -28,7 +28,9 @@ contract FlightSuretyApp {
 
     address private contractOwner;          // Account used to deploy contract
 
-    address[] private airlineAddress;
+    address[] private airlineAddress;       // Hold airline address
+
+    mapping(address => uint256) private voteCount;  // Hold votes for every airline address
 
     FlightSuretyData flightSuretyData;      // Pointing to FlightSuretyData contract
 
@@ -99,6 +101,16 @@ contract FlightSuretyApp {
         return true;  // Modify to call data contract's status
     }*/
 
+    function getvoteCount   (
+                                address airlineAdd
+                            )
+                            external
+                            view
+                            returns(uint256)
+    {
+        return voteCount[airlineAdd];
+    }
+
     /********************************************************************************************/
     /*                                     SMART CONTRACT FUNCTIONS                             */
     /********************************************************************************************/
@@ -151,6 +163,7 @@ contract FlightSuretyApp {
             airlineAddress.push(airAddress);
             //uint256 cc = airlineAddress.length;
             //return (success, 0);
+            voteCount[airAddress] = counter;
             return (success, counter);
         }
         else
@@ -160,17 +173,21 @@ contract FlightSuretyApp {
             for(uint i=0; i< counter; i++){
                 vo = randVote(airlineAddress[i]);
                 if(vo){
-                    votes.add(1);
+                    //votes.add(1);
+                    votes++;
                 }
             }
             //  require(votes>=(counter/2),"airlines voted to reject you");
             if(votes>=(counter/2)) {
                 success = flightSuretyData.registerAirline(airAddress, airName);
-                counter.add(1);
+                //counter.add(1);
+                counter++;
                 airlineAddress.push(airAddress);
+                voteCount[airAddress] = votes;
                 return (true, votes);
             }
             else {
+                voteCount[airAddress] = 50;
                 return (false, votes);
             }          
         }
