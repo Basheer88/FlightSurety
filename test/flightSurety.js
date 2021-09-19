@@ -99,17 +99,39 @@ contract('Flight Surety Tests', async (accounts) => {
   });
 
   
-  it('(testing x[0][1]) ', async () => {
+  it('First Four Accounts no Vote Only Last one', async () => {
     
     // ARRANGE
-    let newAirline = accounts[8];
+    let newAirlineOne = accounts[2];
+    let newAirlineTwo = accounts[3];
+    let newAirlineThree = accounts[4];
+    let newAirlineFour = accounts[5];
+    let newAirlineFive = accounts[6];
     
     //ACT
-    let x = await config.flightSuretyApp.registerAirline.call(newAirline, "ThirdAirLine", {from: config.owner});
-    
-    // ASSERT
-    assert.equal(x[0], true, "notworking ONE");
-    assert.equal(x[1], 0, "notworking ONE");
+    let One = await config.flightSuretyApp.registerAirline.call(newAirlineOne, "ThirdAirLine", {from: config.owner});
+    let Two = await config.flightSuretyApp.registerAirline.call(newAirlineTwo, "ThirdAirLine", {from: config.owner});
+    let Three = await config.flightSuretyApp.registerAirline.call(newAirlineThree, "ThirdAirLine", {from: config.owner});
+    let Four = await config.flightSuretyApp.registerAirline.call(newAirlineFour, "ThirdAirLine", {from: config.owner});
+    let Five = await config.flightSuretyApp.registerAirline.call(newAirlineFive, "ThirdAirLine", {from: config.owner});
+
+    // ASSERT Second Account
+    assert.equal(One[0], true, "One Returned False");
+    assert.equal(One[1].toNumber(), 1, "One Number of Votes should be 0");
+
+    // ASSERT Second Account
+    assert.equal(Two[0], true, "Two Returned False");
+    assert.equal(Two[1].toNumber(), 2, "Two Number of Votes should be 0");
+    // Third Account
+    assert.equal(Three[0], true, "Three Returned False");
+    assert.equal(Three[1].toNumber(), 3, "Three Number of Votes should be 0");
+    // Fourth Account
+    assert.equal(Four[0], true, "Four Returned False");
+    assert.equal(Four[1].toNumber(), 4, "Four Number of Votes should be 0");
+    // Fifth account
+    assert.equal(Five[0], true, "Five Returned False");
+    assert.equal(Five[1].toNumber() , 5, "Five Number of Votes should not be 0");
+    //notEqual
 
   });
 

@@ -24,11 +24,11 @@ contract FlightSuretyApp {
     uint8 private constant STATUS_CODE_LATE_TECHNICAL = 40;
     uint8 private constant STATUS_CODE_LATE_OTHER = 50;
 
-    uint256 private counter = 1;            // Registered Airlines Counter 
+    uint256 private counter = 0;            // Registered Airlines Counter 
 
     address private contractOwner;          // Account used to deploy contract
 
-    address[] private airlineAddress = new address[](0);
+    address[] private airlineAddress;
 
     FlightSuretyData flightSuretyData;      // Pointing to FlightSuretyData contract
 
@@ -144,19 +144,20 @@ contract FlightSuretyApp {
         require(flightSuretyData.isAirline(msg.sender), "Requesting Airline is not funded");
         require(flightSuretyData.isRegisteredAirline(airAddress) == false, "Airline already registered");
         votes = 0;
-        if(counter <= 4)
+        if(counter < 4)
         {
             success = flightSuretyData.registerAirline(airAddress, airName);
-            counter.add(1);
+            counter++;
             airlineAddress.push(airAddress);
+            //uint256 cc = airlineAddress.length;
             //return (success, 0);
-            return (success, 0);
+            return (success, counter);
         }
         else
         {
             bool vo;
             // ask for voting
-            for(uint i=1; i<= counter; i++){
+            for(uint i=0; i< counter; i++){
                 vo = randVote(airlineAddress[i]);
                 if(vo){
                     votes.add(1);
@@ -167,12 +168,10 @@ contract FlightSuretyApp {
                 success = flightSuretyData.registerAirline(airAddress, airName);
                 counter.add(1);
                 airlineAddress.push(airAddress);
-                return (success, votes);
-                //return (true, votes);
+                return (true, votes);
             }
             else {
                 return (false, votes);
-
             }          
         }
     }
