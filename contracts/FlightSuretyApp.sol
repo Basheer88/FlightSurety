@@ -136,19 +136,21 @@ contract FlightSuretyApp {
     function registerAirline
                             (
                                 address airAddress,
-                                uint256 airName   
+                                string airName   
                             )
                             external
                             returns(bool success, uint256 votes)
     {
+        require(flightSuretyData.isAirline(msg.sender), "Requesting Airline is not funded");
+        require(flightSuretyData.isRegisteredAirline(airAddress) == false, "Airline already registered");
         votes = 0;
         if(counter >= 4)
         {
-            flightSuretyData.registerAirline(airAddress, airName);
+            success = flightSuretyData.registerAirline(airAddress, airName);
             counter.add(1);
             airlineAddress.push(airAddress);
             //return (success, 0);
-            return (true, 0);
+            return (success, 0);
         }
         else
         {
@@ -162,14 +164,15 @@ contract FlightSuretyApp {
             }
             //  require(votes>=(counter/2),"airlines voted to reject you");
             if(votes>=(counter/2)) {
-                flightSuretyData.registerAirline(airAddress, airName);
+                success = flightSuretyData.registerAirline(airAddress, airName);
                 counter.add(1);
                 airlineAddress.push(airAddress);
-                //return (success, votes);
-                return (true, votes);
+                return (success, votes);
+                //return (true, votes);
             }
             else {
                 return (false, votes);
+
             }          
         }
     }
@@ -480,6 +483,20 @@ contract FlightSuretyData {
                             pure
                             returns(bool);
 
+    function isAirline      (
+                                address _airline
+                            ) 
+                            public 
+                            view 
+                            returns(bool);
+
+    function isRegisteredAirline(
+                                    address _airline
+                                ) 
+                            public 
+                            view 
+                            returns(bool); 
+
     function isRegisteredFlight(
                                     bytes32 flightID
                                 ) 
@@ -502,9 +519,10 @@ contract FlightSuretyData {
     function registerAirline
                             (
                                 address airAddress,
-                                uint256 airName    
+                                string airName    
                             )
-                            external;
+                            external
+                            returns(bool);
 
     function registerFlight
                             (

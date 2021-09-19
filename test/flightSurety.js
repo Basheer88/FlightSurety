@@ -80,7 +80,7 @@ contract('Flight Surety Tests', async (accounts) => {
 
     // ACT
     try {
-        await config.flightSuretyApp.registerAirline(newAirline, {from: config.firstAirline});
+        let x = await config.flightSuretyApp.registerAirline(newAirline, "SecAirLine", {from: config.firstAirline});
     }
     catch(e) {
 
@@ -91,6 +91,25 @@ contract('Flight Surety Tests', async (accounts) => {
     assert.equal(result, false, "Airline should not be able to register another airline if it hasn't provided funding");
 
   });
- 
+
+  it(`(First Airline) is registered when contract is deployed`, async function () {
+    // Determine if Airline is registered
+    let result = await config.flightSuretyData.isRegisteredAirline.call(config.owner);
+    assert.equal(result, true, "First airline was not registed upon contract creation");
+  });
+
+  
+  it('(testing x[0][1]) ', async () => {
+    
+    // ARRANGE
+    let newAirline = accounts[8];
+    
+    //ACT
+    let x = await config.flightSuretyApp.registerAirline(newAirline, "ThirdAirLine", {from: config.owner});
+
+    // ASSERT
+    assert.equal(x[0], true, "notworking ONE");
+
+  });
 
 });

@@ -28,7 +28,7 @@ contract FlightSuretyData {
         bool isRegistered;
         bool isFunded;
         address airlineAddress;
-        uint256 airlineName;
+        string airlineName;
     }
     mapping(address => AirLine) private airlines;
 
@@ -68,6 +68,11 @@ contract FlightSuretyData {
     {
         contractOwner = msg.sender;
         authorizedContracts[msg.sender]=1;
+
+        airlines[contractOwner].isRegistered = true;
+        airlines[contractOwner].isFunded = true;
+        airlines[contractOwner].airlineAddress = contractOwner;
+        airlines[contractOwner].airlineName = "Bash";
     }
 
     /********************************************************************************************/
@@ -131,6 +136,38 @@ contract FlightSuretyData {
     }
 
     /**
+    * @dev Get operating status of contract
+    *
+    * @return A bool that is the current operating status
+    */      
+    function isAirline      (
+                                address _airline
+                            ) 
+                            public 
+                            view 
+                            returns(bool) 
+    {
+        //require(airlines[air].isRegistered, "AirLines is not registered");
+        //return airlines[air].isRegistered;
+        return airlines[_airline].isFunded;
+    }
+
+    /**
+    * @dev Get Airline registration status
+    *
+    * @return A bool that indicate Airline registration status
+    */      
+    function isRegisteredAirline(
+                                    address _airline
+                                ) 
+                            public 
+                            view 
+                            returns(bool) 
+    {
+        return airlines[_airline].isRegistered;
+    }
+
+    /**
     * @dev Get Flight registration status
     *
     * @return A bool that indicate flight registration status
@@ -172,11 +209,12 @@ contract FlightSuretyData {
     function registerAirline
                             (
                                 address airAddress,
-                                uint256 airName    
+                                string airName    
                             )
                             isCallerAuthorized
                             requireIsOperational
                             external
+                            returns (bool)
     {
         require(!airlines[airAddress].isRegistered, "Airline is already registered.");
         require(airlines[msg.sender].isRegistered, "Only registered airlines can register new one");
@@ -184,6 +222,7 @@ contract FlightSuretyData {
         airlines[airAddress].airlineName = airName;
         airlines[airAddress].isRegistered = true;
         airlines[airAddress].isFunded = false;
+        return true;
     }
 
    /**
