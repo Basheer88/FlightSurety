@@ -57,6 +57,17 @@ contract FlightSuretyData {
     /********************************************************************************************/
 
 
+
+    event AuthorizedCaller(address caller);
+    event DeAuthorizedCaller(address caller);
+
+    event RegisterAirline(address indexed account);
+    event RegisterFlight(bytes32 flightKey);
+
+    event Bought(address buyer, bytes32 flightKey, uint256 amount);
+    event Creditted(bytes32 flightKey);
+    event Paid(address insuree, uint256 amount);
+
     /**
     * @dev Constructor
     *      The deploying account becomes contractOwner
@@ -73,6 +84,8 @@ contract FlightSuretyData {
         airlines[msg.sender].isFunded = true;
         airlines[msg.sender].airlineAddress = contractOwner;
         airlines[msg.sender].airlineName = "Bash";
+
+        emit RegisterAirline(contractOwner);
     }
 
     /********************************************************************************************/
@@ -111,12 +124,16 @@ contract FlightSuretyData {
         _;
     }
 
-    function authorizeContract(address dataContract) external requireContractOwner {
+    function authorizeContract(address dataContract) external requireContractOwner returns(bool){
         authorizedContracts[dataContract] = 1;
+        emit AuthorizedCaller(dataContract);
+        return true;
     }
 
-    function deauthorizeContract(address dataContract) external requireContractOwner {
+    function deauthorizeContract(address dataContract) external requireContractOwner returns(bool){
         delete authorizedContracts[dataContract];
+        emit DeAuthorizedCaller(dataContract);
+        return true;
     }
     /********************************************************************************************/
     /*                                       UTILITY FUNCTIONS                                  */
@@ -222,6 +239,7 @@ contract FlightSuretyData {
         airlines[airAddress].airlineName = airName;
         airlines[airAddress].isRegistered = true;
         airlines[airAddress].isFunded = false;
+        emit RegisterAirline(airAddress);
         return true;
     }
 
@@ -246,6 +264,7 @@ contract FlightSuretyData {
         flights[flightID].updatedTimestamp = timeStamp;
         flights[flightID].statusCode = 0;
         flights[flightID].isRegistered = true;
+        emit RegisterFlight(flightID);
     }
 
    /**
@@ -276,6 +295,7 @@ contract FlightSuretyData {
         // transfer insurance to airline 
         flights[flightID].airline.transfer(recievedinsurence);
         flights[flightID].passAddress.push(passengerID);
+        emit Bought(passengerID, flightID, recievedinsurence);
         return true;
     }
 
@@ -303,6 +323,7 @@ contract FlightSuretyData {
             passenger[add].insuranceAmount = insu;
             //flights[flightID].
         }
+        emit Creditted(flightID);
 
         //return success;
 
@@ -333,6 +354,8 @@ contract FlightSuretyData {
         
         address passengerToTransfer = passenger[passengerAddress].passengerAddress;
         passengerToTransfer.transfer(amount);                      // transfer insurance to passenger
+
+        emit Paid(passengerAddress, amount);
     }
 
    /**
