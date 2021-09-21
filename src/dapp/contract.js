@@ -14,7 +14,20 @@ export default class Contract {
         this.passengers = [];
     }
 
+    getMetaskAccountID() {
+        // Retrieving metamask accounts
+        this.web3.eth.getAccounts(function (err, res) {
+            if (err) {
+                console.log('Error:', err)
+                return
+            }
+            this.metamaskAccountID = res[0]
+        })
+      }
+
     initialize(callback) {
+        this.getMetaskAccountID()
+
         this.web3.eth.getAccounts((error, accts) => {
            
             this.owner = accts[0];
@@ -33,12 +46,131 @@ export default class Contract {
         });
     }
 
+    getAirlines() {
+        return this.airlines
+    }
+    
+    getPassengers() {
+        return this.passengers
+    }
+
     isOperational(callback) {
        let self = this;
        self.flightSuretyApp.methods
             .isOperational()
             .call({ from: self.owner}, callback);
     }
+
+    isAirlineRegistered(airline) {
+        let self = this
+    
+        return new Promise((res, rej) => {
+          self.flightSuretyApp.methods
+            .isAirline(airline)
+            .call({ from: self.owner }, (error, result) => {
+              if (error) {
+                console.log(error)
+                rej(error)
+              } else {
+                res(result)
+              }
+            })
+        })
+    }
+    
+    getAirlineFunds(airline) {
+        const self = this
+    
+        return new Promise((res, rej) => {
+          self.flightSuretyApp.methods
+            .getFunds()
+            .call({ from: airline }, (error, result) => {
+              if (error) {
+                console.log(error)
+                rej(error)
+              } else {
+                const value = Web3.utils.fromWei(result, 'ether')
+                res(value)
+              }
+            })
+        })
+    }
+    
+    // Airline Regestration
+    registerAirline(airline, airlineName) {
+        const self = this
+        return new Promise((res, rej) => {
+          self.flightSuretyApp.methods.registerAirline(airline,airlineName).send({ from: self.owner }, (error, result) => {
+              if (error) {
+                console.log(error)
+                rej(error)
+              } else {
+                res(result)
+              }
+            })
+        })
+    }
+    
+    // Airline Funding 
+    fundAirline(airline) {
+        const self = this
+        const value = Web3.utils.toWei('10', 'ether')
+    
+        return new Promise((res, rej) => {
+          self.flightSuretyApp.methods.fund().send({ from: airline, value: value }, (error, result) => {
+              if (error) {
+                console.log(error)
+                rej(error)
+              } else {
+                res(result)
+              }
+            })
+        })
+    }
+
+    // Fligth Registration
+    registerFlight(flightID, flightTime) {
+        const self = this
+        return new Promise((res, rej) => {
+          self.flightSuretyApp.methods.registerFlight(flightID,flightTime).send({ from: self.owner }, (error, result) => {
+              if (error) {
+                console.log(error)
+                rej(error)
+              } else {
+                res(result)
+              }
+            })
+        })
+    }
+
+    // Buy Flight Insurance
+    buy(flight, timestamp, amount) {
+        const self = this
+        return new Promise((res, rej) => {
+          self.flightSuretyApp.methods.buy(flight, timestamp).send({ from: self.owner, value: amount }, (error, result) => {
+              if (error) {
+                rej(error)
+              } else {
+                res(result)
+              }
+            })
+        })
+    }
+    
+    payInsurance(flight) {
+        const self = this
+        return new Promise((res, rej) => {
+          self.flightSuretyApp.methods.payInsurance(flight).send({ from: self.owner }, (error, result) => {
+              if (error) {
+                console.log(error)
+                rej(error)
+              } else {
+                res(result)
+              }
+            })
+        })
+    }
+
 
     fetchFlightStatus(flight, callback) {
         let self = this;
