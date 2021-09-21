@@ -25,7 +25,63 @@ import './flightsurety.css';
                 display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp} ]);
             });
         })
-    
+
+        // Registering Airline
+        DOM.elid('registerAirBTN').addEventListener('click', async() => {
+            let airlineAddress = DOM.elid('AirLine-Address').value;
+            let airlineName = DOM.elid('AirLine-Name').value;
+
+            // Write transaction
+            await contract.registerAirline(airlineAddress, airlineName ,(error, result) => {
+                display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp}]);
+            });
+        })
+
+        // Funding Airline
+        DOM.elid('fundAirBTN').addEventListener('click', async() => {
+            let airlineAddress = DOM.elid('AirLine-Address').value;
+            //let airlineFund = DOM.elid('AirLine-Fund').value;
+
+            // Write transaction
+            await contract.fundAirline(airlineAddress ,(error, result) => {
+                display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp}]);
+            //updateData(contract)
+            });
+        })
+
+        // Registering Flight
+        DOM.elid('registerFlight').addEventListener('click', async() => {
+            let flightID = DOM.elid('FlightID').value;
+            let flightTime = DOM.elid('FlightTime').value;
+
+            // Write transaction
+            await contract.registerFlight(flightID, flightTime ,(error, result) => {
+                display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp}]);
+            });
+        })
+
+        // Buy Flight Insurance
+        DOM.elid('Buy').addEventListener('click', async() => {
+            let flightID = DOM.elid('buyFlight').value;
+            let flightTime = DOM.elid('FlightTime').value;
+            let amount = parseInt(DOM.elid('buyAmount').value);
+
+            // Write transaction
+            await contract.buy(flightID, flightTime ,(error, result) => {
+                display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp}]);
+            });
+        })
+
+        // Withdraw Flight Insurance
+        DOM.elid('Refund').addEventListener('click', async() => {
+            let flightID = DOM.elid('withdrawFlight').value;
+
+            // Write transaction
+            await contract.payInsurance(flightID ,(error, result) => {
+                display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp}]);
+            });
+        })
+
     });
     
 
