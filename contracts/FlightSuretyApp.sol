@@ -92,14 +92,14 @@ contract FlightSuretyApp {
     /********************************************************************************************/
     /*                                       UTILITY FUNCTIONS                                  */
     /********************************************************************************************/
-/*
+
     function isOperational() 
                             public 
-                            pure 
+                            view 
                             returns(bool) 
     {
-        return true;  // Modify to call data contract's status
-    }*/
+        return flightSuretyData.isOperational();  // Modify to call data contract's status
+    }
 
     function getvoteCount   (
                                 address airlineAdd
@@ -496,7 +496,7 @@ contract FlightSuretyApp {
 contract FlightSuretyData {
     function isOperational() 
                             public 
-                            pure
+                            view
                             returns(bool);
 
     function isAirline      (
