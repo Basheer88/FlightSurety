@@ -75,7 +75,6 @@ import './flightsurety.css';
         // Fetch Flight Status
         DOM.elid('fetch').addEventListener('click', async() => {
             let fetchFlight = DOM.elid('fetchFlight').value;
-
             // Write transaction
             await contract.fetchFlightStatus(fetchFlight,(error, result) => {
                 display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp}]);
@@ -97,6 +96,47 @@ import './flightsurety.css';
 
 })();
 
+// Fill Flight Select with regitered flight
+async function flightFormSelect(contract) {
+    const selectBuyFlight = DOM.elid('buyFlight');
+    const selectFlightStatus = DOM.elid('buyFlight');
+    //const timestampInput = DOM.elid('timestampInput');
+  
+    //timestampInput.value = new Date().toISOString().slice(0, 10)
+  
+    while (selectBuyFlight.childElementCount > 1) {
+      const lastChild = selectBuyFlight.lastChild;
+      selectBuyFlight.removeChild(lastChild);
+    }
+
+    while (selectFlightStatus.childElementCount > 1) {
+        const lastChild = selectFlightStatus.lastChild;
+        selectFlightStatus.removeChild(lastChild);
+      }
+  
+    const flights = await getRegisteredFlights(contract);
+    const options = [];
+  
+    flights.forEach((address) => {
+      options.push(DOM.option(address, { value: address }))
+    })
+  
+    DOM.appendArray(selectBuyFlight, options);
+    DOM.appendArray(selectFlightStatus, options);
+  }
+
+
+async function getRegisteredFlights(contract) {
+    const flights = contract.getFlights();
+  /*  const registeredFlights = [];
+  
+    for (const flight of flights) {
+        registeredFlights.push(flight)
+    }  
+    
+    return registeredFlights    */
+    return flights;
+  }
 
 function display(title, description, results) {
     let displayDiv = DOM.elid("display-wrapper");

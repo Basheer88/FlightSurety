@@ -12,6 +12,7 @@ export default class Contract {
         this.owner = null;
         this.airlines = [];
         this.passengers = [];
+        this.flights = [];
     }
 
     getMetaskAccountID() {
@@ -47,11 +48,11 @@ export default class Contract {
     }
 
     getAirlines() {
-        return this.airlines
+        return this.airlines;
     }
     
     getPassengers() {
-        return this.passengers
+        return this.passengers;
     }
 
     isOperational(callback) {
@@ -141,6 +142,21 @@ export default class Contract {
               }
             })
         })
+    }
+
+    getFlights() {
+      let self = this;
+  
+      return new Promise((res, rej) => {
+        self.flightSuretyApp.methods.getFlights().call({ from: self.owner }, (error, result) => {
+            if (error) {
+              console.log(error)
+              rej(error)
+            } else {
+              res(result)
+            }
+          })
+      })
     }
 
     // Buy Flight Insurance

@@ -58,7 +58,11 @@
         <h2>Buy Flight Insureance</h2>
         <div class="row top-20">
             <label class="form">Flight</label>
-            <input type="text" id="buyFlight">
+            <select name="flight" id="buyFlight" class="form-control">
+                <option selected disabled>Select One</option>
+            </select>
+
+    <!--        <input type="text" id="buyFlight">  -->
             <input type="text" id="buyAmount">
             <input type="text" id="buyTime">
             <btn class="btn btn-primary" id="Buy">Buy</btn>
@@ -68,7 +72,10 @@
         <h2>Flight Status</h2>
         <div class="row top-20">
             <label class="form">Flight</label>
-            <input type="text" id="fetchFlight">
+<!--            <input type="text" id="fetchFlight">    -->
+            <select name="flight" id="fetchFlight" class="form-control">
+                <option selected disabled>Select One</option>
+            </select>
             <btn class="btn btn-primary" id="fetch">Fetch Flight Status</btn>
         </div>
 

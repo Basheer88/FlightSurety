@@ -30,6 +30,8 @@ contract FlightSuretyApp {
 
     address[] private airlineAddress;       // Hold airline address
 
+    bytes32[] private flights;       // Hold airline address
+
     mapping(address => uint256) private voteCount;  // Hold votes for every airline address
 
     FlightSuretyData flightSuretyData;      // Pointing to FlightSuretyData contract
@@ -111,6 +113,13 @@ contract FlightSuretyApp {
         return voteCount[airlineAdd];
     }
 
+    function getFlights()
+                            public
+                            view
+                            returns(bytes32[])
+    {
+        return flights;
+    }
     /********************************************************************************************/
     /*                                     SMART CONTRACT FUNCTIONS                             */
     /********************************************************************************************/
@@ -205,6 +214,7 @@ contract FlightSuretyApp {
                             )
                             external
     {
+        flights.push(flightID);
         flightSuretyData.registerFlight(msg.sender, flightID, timeStamp);
     }
     
