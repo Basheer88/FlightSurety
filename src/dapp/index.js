@@ -72,6 +72,16 @@ import './flightsurety.css';
             });
         })
 
+        // Fetch Flight Status
+        DOM.elid('fetch').addEventListener('click', async() => {
+            let fetchFlight = DOM.elid('fetchFlight').value;
+
+            // Write transaction
+            await contract.fetchFlightStatus(fetchFlight,(error, result) => {
+                display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp}]);
+            });
+        })
+
         // Withdraw Flight Insurance
         DOM.elid('Refund').addEventListener('click', async() => {
             let flightID = DOM.elid('withdrawFlight').value;
