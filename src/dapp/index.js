@@ -16,6 +16,8 @@ import './flightsurety.css';
             display('Operational Status', 'Check if contract is operational', [ { label: 'Operational Status', error: error, value: result} ]);
         });
     
+        // Get current registered flight if any
+        flightFormSelect(contract);
 
         // User-submitted transaction
         DOM.elid('submit-oracle').addEventListener('click', () => {
@@ -58,6 +60,8 @@ import './flightsurety.css';
             await contract.registerFlight(flightID, flightTime ,(error, result) => {
                 display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp}]);
             });
+
+            flightFormSelect(contract);
         })
 
         // Buy Flight Insurance
