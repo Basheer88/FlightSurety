@@ -545,7 +545,7 @@ contract FlightSuretyData {
     function registerAirline
                             (
                                 address airAddress,
-                                string airName    
+                                string airName  
                             )
                             external
                             returns(bool);

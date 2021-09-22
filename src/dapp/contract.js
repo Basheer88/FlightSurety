@@ -101,7 +101,7 @@ export default class Contract {
     registerAirline(airline, airlineName) {
         const self = this
         return new Promise((res, rej) => {
-          self.flightSuretyApp.methods.registerAirline(airline,airlineName).send({ from: self.owner }, (error, result) => {
+          self.flightSuretyApp.methods.registerAirline(airline,airlineName).send({ from: self.owner, gasPrice: '100000000000', gas: '4712388' }, (error, result) => {
               if (error) {
                 console.log(error)
                 rej(error)
@@ -118,7 +118,7 @@ export default class Contract {
         const value = Web3.utils.toWei('10', 'ether')
     
         return new Promise((res, rej) => {
-          self.flightSuretyApp.methods.fund().send({ from: airline, value: value }, (error, result) => {
+          self.flightSuretyApp.methods.fund().send({ from: airline, gasPrice: '100000000000', gas: '4712388', value: value }, (error, result) => {
               if (error) {
                 console.log(error)
                 rej(error)
@@ -133,7 +133,7 @@ export default class Contract {
     registerFlight(flightID, flightTime) {
         const self = this
         return new Promise((res, rej) => {
-          self.flightSuretyApp.methods.registerFlight(flightID,flightTime).send({ from: self.owner }, (error, result) => {
+          self.flightSuretyApp.methods.registerFlight(flightID,flightTime).send({ from: self.owner, gasPrice: '100000000000', gas: '4712388' }, (error, result) => {
               if (error) {
                 console.log(error)
                 rej(error)
@@ -163,7 +163,7 @@ export default class Contract {
     buy(flight, timestamp, amount) {
         const self = this
         return new Promise((res, rej) => {
-          self.flightSuretyApp.methods.buy(flight, timestamp).send({ from: self.owner, value: amount }, (error, result) => {
+          self.flightSuretyApp.methods.buy(flight, timestamp).send({ from: self.owner, gasPrice: '100000000000', gas: '4712388',  value: amount }, (error, result) => {
               if (error) {
                 rej(error)
               } else {
@@ -176,7 +176,7 @@ export default class Contract {
     payInsurance(flight) {
         const self = this
         return new Promise((res, rej) => {
-          self.flightSuretyApp.methods.payInsurance(flight).send({ from: self.owner }, (error, result) => {
+          self.flightSuretyApp.methods.payInsurance(flight).send({ from: self.owner, gasPrice: '100000000000', gas: '4712388' }, (error, result) => {
               if (error) {
                 console.log(error)
                 rej(error)

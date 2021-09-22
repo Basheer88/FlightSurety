@@ -86,6 +86,7 @@ contract FlightSuretyData {
         airlines[msg.sender].airlineName = "Bash";
 
         emit RegisterAirline(contractOwner);
+        emit AuthorizedCaller(contractOwner);
     }
 
     /********************************************************************************************/
@@ -226,9 +227,8 @@ contract FlightSuretyData {
     function registerAirline
                             (
                                 address airAddress,
-                                string airName    
+                                string airName   
                             )
-                            isCallerAuthorized
                             requireIsOperational
                             external
                             returns (bool)
@@ -254,7 +254,6 @@ contract FlightSuretyData {
                                 bytes32 flightID,
                                 uint256 timeStamp
                             )
-                            isCallerAuthorized
                             requireIsOperational
                             external
     {
@@ -278,7 +277,6 @@ contract FlightSuretyData {
                                 uint256 recievedinsurence,
                                 uint256 timestamp                             
                             )
-                            isCallerAuthorized
                             requireIsOperational                            
                             external
                             payable
@@ -340,6 +338,7 @@ contract FlightSuretyData {
                                 bytes32 flightID,
                                 address passengerAddress
                             )
+                            requireIsOperational
                             external
                             payable
     {

@@ -103,7 +103,7 @@ import './flightsurety.css';
 // Fill Flight Select with regitered flight
 async function flightFormSelect(contract) {
     const selectBuyFlight = DOM.elid('buyFlight');
-    const selectFlightStatus = DOM.elid('buyFlight');
+    const selectFlightStatus = DOM.elid('fetchFlight');
     //const timestampInput = DOM.elid('timestampInput');
   
     //timestampInput.value = new Date().toISOString().slice(0, 10)

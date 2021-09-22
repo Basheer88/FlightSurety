@@ -23,8 +23,8 @@ let oracles = [];
 
 //register as many oracles as there are accounts (oracle addresses are account addresses)
   accounts.forEach( async(oracleAddress) => {
-    try {
-      await flightSuretyApp.methods.registerOracle().send({from: oracleAddress, value: fee, gas: 3000000});
+    try {                                                                                         
+      await flightSuretyApp.methods.registerOracle().send({from: oracleAddress, value: fee, gas : 4712388, gasPrice: 100000000000 });
       let indexesResult = await flightSuretyApp.methods.getMyIndexes().call({from: oracleAddress});
       oracles.push({
         address: oracleAddress,
@@ -71,7 +71,7 @@ flightSuretyApp.events.OracleRequest({
           result.timestamp,
           statusCode
           ).send(
-          { from: oracle.address, gas:5555555}
+          { from: oracle.address, gas: 4712388, gasPrice: 100000000000 }
           ).then(res => {
             console.log(`OracleResponse: address(${oracle.address}) index(${index}) accepted[${statusCode}]`)
           }).catch(err => {
