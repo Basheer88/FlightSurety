@@ -30,7 +30,7 @@ contract FlightSuretyApp {
 
     address[] private airlineAddress;       // Hold airline address
 
-    bytes32[] private flights;       // Hold airline address
+    bytes32[] private flights;       // Hold flights ID
 
     mapping(address => uint256) private voteCount;  // Hold votes for every airline address
 
