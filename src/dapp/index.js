@@ -71,7 +71,7 @@ import './flightsurety.css';
             let amount = parseInt(DOM.elid('buyAmount').value);
 
             // Write transaction
-            await contract.buy(flightID, flightTime ,(error, result) => {
+            await contract.buy(flightID, flightTime ,amount ,(error, result) => {
                 display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp}]);
             });
         })
@@ -105,32 +105,33 @@ async function flightFormSelect(contract) {
     const selectBuyFlight = DOM.elid('buyFlight');
     const selectFlightStatus = DOM.elid('fetchFlight');
     //const timestampInput = DOM.elid('timestampInput');
-  
     //timestampInput.value = new Date().toISOString().slice(0, 10)
-  
     while (selectBuyFlight.childElementCount > 1) {
       const lastChild = selectBuyFlight.lastChild;
       selectBuyFlight.removeChild(lastChild);
     }
-
     while (selectFlightStatus.childElementCount > 1) {
         const lastChild = selectFlightStatus.lastChild;
         selectFlightStatus.removeChild(lastChild);
       }
-  
     const flights = await getRegisteredFlights(contract);
     const options = [];
-  
     flights.forEach((address) => {
-      options.push(DOM.option(address, { value: address }))
+        console.log(address)
+        displayList({
+            airline: "Airline",
+            flight: address,
+            timestamp: Date.now()
+        }, selectBuyFlight)
     })
-  
     DOM.appendArray(selectBuyFlight, options);
     DOM.appendArray(selectFlightStatus, options);
-  }
-
+}
 
 async function getRegisteredFlights(contract) {
+    console.log("before")
+    console.log(contract.getFlights())
+    console.log("after")
     const flights = contract.getFlights();
   /*  const registeredFlights = [];
   
@@ -139,8 +140,12 @@ async function getRegisteredFlights(contract) {
     }  
     
     return registeredFlights    */
+    console.log("Here1");
+    console.log(flights);
+    console.log("Here2");
     return flights;
   }
+
 
 function display(title, description, results) {
     let displayDiv = DOM.elid("display-wrapper");
@@ -154,9 +159,16 @@ function display(title, description, results) {
         section.appendChild(row);
     })
     displayDiv.append(section);
+} 
 
+function displayList(flight, parentEl) {
+    console.log(flight);
+    console.log(parentEl);
+    let el = document.createElement("option");
+    el.text = `${flight.flight} - ${new Date((flight.timestamp))}`;
+    el.value = JSON.stringify(flight);
+    parentEl.add(el);
 }
-
 
 
 
