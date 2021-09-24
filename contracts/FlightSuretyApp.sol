@@ -293,8 +293,7 @@ contract FlightSuretyApp {
     // Buy Flight Insurance functions
     function buy
                             (
-                                bytes32 _flightID,
-                                uint256 _timestamp
+                                bytes32 _flightID
                             )
                             external
                             payable
@@ -302,7 +301,7 @@ contract FlightSuretyApp {
     {
         require(flightSuretyData.isRegisteredFlight(_flightID),"Flight is not registered.");
         require(msg.value <= 1 ether," more than one ether.");
-        bool success = flightSuretyData.buy(_flightID, msg.sender, msg.value, _timestamp);
+        bool success = flightSuretyData.buy(_flightID, msg.sender, msg.value);
         return success;
     }
 
@@ -567,8 +566,7 @@ contract FlightSuretyData {
     function buy            (
                                 bytes32 flightID,
                                 address passengerID,
-                                uint256 recievedinsurence,
-                                uint256 timestamp
+                                uint256 recievedinsurence
                             )
                             external
                             payable

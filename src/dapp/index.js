@@ -37,6 +37,7 @@ import './flightsurety.css';
             await contract.registerAirline(airlineAddress, airlineName ,(error, result) => {
                 display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp}]);
             });
+            DOM.elid('RegisterNewAirline').innerText = "Airline Registered Successfully";
         })
 
         // Funding Airline
@@ -49,31 +50,37 @@ import './flightsurety.css';
                 display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp}]);
             //updateData(contract)
             });
+            DOM.elid('FundNewAirline').innerText = "Funded Successfully";
         })
 
         // Registering Flight
         DOM.elid('registerFlight').addEventListener('click', async() => {
             let flightID = DOM.elid('FlightID').value;
-            let flightTime = DOM.elid('FlightTime').value;
-
+            //let flightTime = DOM.elid('FlightTime').value;
+            let flightTime = Date.now();
+            //console.log("Timeeee");
+            //console,log(flightTime);
             // Write transaction
             await contract.registerFlight(flightID, flightTime ,(error, result) => {
                 display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp}]);
             });
 
             flightFormSelect(contract);
+            DOM.elid('RegisterNewFlight').innerText = "Registered Successfully";  
         })
 
         // Buy Flight Insurance
         DOM.elid('Buy').addEventListener('click', async() => {
             let flightID = DOM.elid('buyFlight').value;
-            let flightTime = DOM.elid('FlightTime').value;
+            //let flightTime = DOM.elid('FlightTime').value;
             let amount = parseInt(DOM.elid('buyAmount').value);
 
             // Write transaction
-            await contract.buy(flightID, flightTime ,amount ,(error, result) => {
+            //await contract.buy(flightID, flightTime ,amount ,(error, result) => {
+            await contract.buy(flightID ,amount ,(error, result) => {
                 display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp}]);
             });
+            DOM.elid('BuyFlightStatus').innerText = "Bought";
         })
 
         // Fetch Flight Status
@@ -93,6 +100,7 @@ import './flightsurety.css';
             await contract.payInsurance(flightID ,(error, result) => {
                 display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp}]);
             });
+            DOM.elid('RefundFligh').innerText = "Refunded";
         })
 
     });
@@ -104,7 +112,7 @@ import './flightsurety.css';
 async function flightFormSelect(contract) {
     const selectBuyFlight = DOM.elid('buyFlight');
     const selectFlightStatus = DOM.elid('fetchFlight');
-    //const timestampInput = DOM.elid('timestampInput');
+    //const timestampInput = DOM.elid('FlightTime').value;
     //timestampInput.value = new Date().toISOString().slice(0, 10)
     while (selectBuyFlight.childElementCount > 1) {
       const lastChild = selectBuyFlight.lastChild;
@@ -119,10 +127,11 @@ async function flightFormSelect(contract) {
     flights.forEach((address) => {
         console.log(address)
         displayList({
-            airline: "Airline",
-            flight: address,
-            timestamp: Date.now()
+            flight: address
         }, selectBuyFlight)
+        displayList({
+            flight: address
+        }, selectFlightStatus)
     })
     DOM.appendArray(selectBuyFlight, options);
     DOM.appendArray(selectFlightStatus, options);
@@ -165,7 +174,7 @@ function displayList(flight, parentEl) {
     console.log(flight);
     console.log(parentEl);
     let el = document.createElement("option");
-    el.text = `${flight.flight} - ${new Date((flight.timestamp))}`;
+    el.text = `${flight.flight}`;
     el.value = JSON.stringify(flight);
     parentEl.add(el);
 }

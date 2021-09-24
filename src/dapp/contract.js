@@ -160,17 +160,18 @@ export default class Contract {
     }
 
     // Buy Flight Insurance
-    buy(flight, timestamp, amount) {
-        const self = this
-        return new Promise((res, rej) => {
-          self.flightSuretyApp.methods.buy(flight, timestamp).send({ from: self.owner, gasPrice: 100000000000, gas: 4712388,  value: amount }, (error, result) => {
-              if (error) {
-                rej(error)
-              } else {
-                res(result)
-              }
-            })
+    buy(flight, amount) {
+      let flightInfo = JSON.parse(flight);
+      const self = this
+      return new Promise((res, rej) => {
+        self.flightSuretyApp.methods.buy(flightInfo.flight).send({ from: self.owner, gasPrice: 100000000000, gas: 4712388,  value: amount }, (error, result) => {
+          if (error) {
+            rej(error)
+          } else {
+            res(result)
+          }
         })
+      })
     }
     
     payInsurance(flight) {

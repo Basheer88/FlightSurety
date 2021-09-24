@@ -274,17 +274,17 @@ contract FlightSuretyData {
                             (
                                 bytes32 flightID,
                                 address passengerID,
-                                uint256 recievedinsurence,
-                                uint256 timestamp                             
+                                uint256 recievedinsurence                            
                             )
                             requireIsOperational                            
                             external
                             payable
                             returns(bool)
     {
-        require(passenger[passengerID].flightID == flightID, "is not a passenger in this flight");
+        //require(passenger[passengerID].flightID == flightID, "is not a passenger in this flight");
         require(passenger[passengerID].insuranceStatus == false, "You already bought an insurence for current flight.");
-        require(flights[flightID].updatedTimestamp == timestamp, "Different Time Stamp");
+        //require(flights[flightID].updatedTimestamp == timestamp, "Different Time Stamp");
+        passenger[passengerID].flightID == flightID;
         passenger[passengerID].insuranceAmount = recievedinsurence;
         passenger[passengerID].passengerAddress = passengerID;
         passenger[passengerID].insuranceStatus = true;

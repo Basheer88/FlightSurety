@@ -39,6 +39,7 @@
             <label class="form">AirLine Address</label>
             <input type="text" id="AirLine-Address">
             <btn class="btn btn-primary" id="registerAirBTN">Register</btn>
+            <label class="form" id="RegisterNewAirline"></label>
         </div>
         
         <br>
@@ -46,14 +47,16 @@
             <label class="form">Amount to Fund</label>
             <input type="text" id="AirLine-Fund">
             <btn class="btn btn-primary" id="fundAirBTN">Fund</btn>
+            <label class="form" id="FundNewAirline"></label>
         </div>
 
         <br>
         <div class="row top-20">
             <label class="form">Flight ID</label>
             <input type="text" id="FlightID">
-            <input type="text" id="FlightTime">
+        <!--    <input type="date" id="FlightTime" name="trip-start" value="2021-09-25" min="2021-09-25" max="2021-12-31"> -->
             <btn class="btn btn-primary" id="registerFlight">Register</btn>
+            <label class="form" id="RegisterNewFlight"></label>
         </div>
 
         <br>
@@ -65,9 +68,11 @@
             </select>
 
     <!--        <input type="text" id="buyFlight">  -->
+    <label class="form">Amount</label>
             <input type="text" id="buyAmount">
-            <input type="text" id="buyTime">
+    <!--        <input type="text" id="buyTime">    -->
             <btn class="btn btn-primary" id="Buy">Buy</btn>
+            <label class="form" id="BuyFlightStatus"></label>
         </div>
 
         <br>
@@ -83,8 +88,10 @@
 
         <h2>Get Refund</h2>
         <div class="row top-20">
+            <label class="form">Flight ID</label>
             <input type="text" id="withdrawFlight">
             <btn class="btn btn-primary" id="Refund">Refund</btn>
+            <label class="form" id="RefundFligh"></label>
         </div>
     </main>
 
