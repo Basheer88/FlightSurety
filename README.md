@@ -45,9 +45,9 @@ Deploy the contents of the ./dapp folder
  the flightID should be entered in bytes32 format or you will get error for exampple use below:
  `0x0000000000000000000000000000000000000000000000000000000000000043`
 
- Note : The frontend doesnt detect from which metamask account you choose to send
+ Note : The frontend doesn't detect from which metamask account you choose to send
 
- To Find which address had been used go to contract.js file and change it manaully 
+ To Find which address had been used go to contract.js file and change it manually 
 
  `// Senders Account`
 
