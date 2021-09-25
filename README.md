@@ -1,6 +1,6 @@
 # FlightSurety
 
-FlightSurety is a sample application project for Udacity's Blockchain course.
+This decentralized application allows airline companies to register their flights and let passenger to buy insurance for their flights. if the flights delayed for a single specific reasons all passenger will get 1.5x of their insurance. works locally for now.
 
 ## Install
 
@@ -56,7 +56,7 @@ Deploy the contents of the ./dapp folder
  `airlineAccount = "0xf17f52151EbEF6C7334FAD080c5704D77216b732";`
 
  `passengerAccount = "0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef";`
- 
+
 
 
 ## Resources
