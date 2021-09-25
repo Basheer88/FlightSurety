@@ -284,14 +284,15 @@ contract FlightSuretyData {
         //require(passenger[passengerID].flightID == flightID, "is not a passenger in this flight");
         require(passenger[passengerID].insuranceStatus == false, "You already bought an insurence for current flight.");
         //require(flights[flightID].updatedTimestamp == timestamp, "Different Time Stamp");
-        passenger[passengerID].flightID == flightID;
+        passenger[passengerID].flightID = flightID;
         passenger[passengerID].insuranceAmount = recievedinsurence;
         passenger[passengerID].passengerAddress = passengerID;
         passenger[passengerID].insuranceStatus = true;
         passenger[passengerID].isTaken == false;                 // is taken yet or not
         
         // transfer insurance to airline 
-        flights[flightID].airline.transfer(recievedinsurence);
+        require(flights[flightID].airline == 0xf17f52151EbEF6C7334FAD080c5704D77216b732 , "different address");
+        (flights[flightID].airline).transfer(recievedinsurence);
         flights[flightID].passAddress.push(passengerID);
         emit Bought(passengerID, flightID, recievedinsurence);
         return true;

@@ -3,11 +3,9 @@ import DOM from './dom';
 import Contract from './contract';
 import './flightsurety.css';
 
-
 (async() => {
 
     let result = null;
-
     let contract = new Contract('localhost', () => {
 
         // Read transaction
@@ -154,7 +152,6 @@ async function getRegisteredFlights(contract) {
     console.log("Here2");
     return flights;
   }
-
 
 function display(title, description, results) {
     let displayDiv = DOM.elid("display-wrapper");

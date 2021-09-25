@@ -13,6 +13,11 @@ export default class Contract {
         this.airlines = [];
         this.passengers = [];
         this.flights = [];
+
+        // Senders Account
+        this.Origin = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57";
+        this.airlineAccount = "0xf17f52151EbEF6C7334FAD080c5704D77216b732";
+        this.passengerAccount = "0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef";
     }
 
     getMetaskAccountID() {
@@ -22,7 +27,8 @@ export default class Contract {
                 console.log('Error:', err)
                 return
             }
-            this.metamaskAccountID = res[0]
+            //this.metamaskAccountID = res[0]
+            this.owner = res[0];
         })
       }
 
@@ -101,7 +107,7 @@ export default class Contract {
     registerAirline(airline, airlineName) {
         const self = this
         return new Promise((res, rej) => {
-          self.flightSuretyApp.methods.registerAirline(airline,airlineName).send({ from: self.owner, gasPrice: 100000000000, gas: 4712388 }, (error, result) => {
+          self.flightSuretyApp.methods.registerAirline(airline, airlineName).send({ from: self.Origin, gasPrice: 100000000000, gas: 4712388 }, (error, result) => {
               if (error) {
                 console.log(error)
                 rej(error)
@@ -118,7 +124,7 @@ export default class Contract {
         const value = Web3.utils.toWei('10', 'ether')
     
         return new Promise((res, rej) => {
-          self.flightSuretyApp.methods.fund().send({ from: airline, gasPrice: 100000000000, gas: 4712388, value: value }, (error, result) => {
+          self.flightSuretyApp.methods.fund().send({ from: self.airlineAccount, gasPrice: 100000000000, gas: 4712388, value: value }, (error, result) => {
               if (error) {
                 console.log(error)
                 rej(error)
@@ -133,7 +139,7 @@ export default class Contract {
     registerFlight(flightID, flightTime) {
         const self = this
         return new Promise((res, rej) => {
-          self.flightSuretyApp.methods.registerFlight(flightID,flightTime).send({ from: self.owner, gasPrice: 100000000000, gas: 4712388 }, (error, result) => {
+          self.flightSuretyApp.methods.registerFlight(flightID,flightTime).send({ from: self.airlineAccount, gasPrice: 100000000000, gas: 4712388 }, (error, result) => {
               if (error) {
                 console.log(error)
                 rej(error)
@@ -164,7 +170,7 @@ export default class Contract {
       let flightInfo = JSON.parse(flight);
       const self = this
       return new Promise((res, rej) => {
-        self.flightSuretyApp.methods.buy(flightInfo.flight).send({ from: self.owner, gasPrice: 100000000000, gas: 4712388,  value: amount }, (error, result) => {
+        self.flightSuretyApp.methods.buy(flightInfo.flight).send({ from: self.passengerAccount, gasPrice: 100000000000, gas: 4712388,  value: amount }, (error, result) => {
           if (error) {
             rej(error)
           } else {
@@ -174,10 +180,11 @@ export default class Contract {
       })
     }
     
+    //get Refund
     payInsurance(flight) {
         const self = this
         return new Promise((res, rej) => {
-          self.flightSuretyApp.methods.payInsurance(flight).send({ from: self.owner, gasPrice: 100000000000, gas: 4712388 }, (error, result) => {
+          self.flightSuretyApp.methods.payInsurance(flight).send({ from: self.passengerAccount, gasPrice: 100000000000, gas: 4712388 }, (error, result) => {
               if (error) {
                 console.log(error)
                 rej(error)
