@@ -39,6 +39,20 @@ To build dapp for prod:
 
 Deploy the contents of the ./dapp folder
 
+## Notes
+ when Running the frontend
+ `http://localhost:8000`
+ the flightID should be entered in bytes32 format or you will get error for exampple use below:
+ `0x0000000000000000000000000000000000000000000000000000000000000043`
+
+ Note : The frontend doesnt detect from which metamask account you choose to send
+
+ To Find which address had been used go to contract.js file and change it manaully 
+ `// Senders Account`
+ `Origin = "0x627306090abaB3A6e1400e9345bC60c78a8BEf57";`
+ `airlineAccount = "0xf17f52151EbEF6C7334FAD080c5704D77216b732";`
+ `passengerAccount = "0xC5fdf4076b8F3A5357c5E395ab970B5B54098Fef";`
+
 
 ## Resources
 
