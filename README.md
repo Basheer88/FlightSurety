@@ -69,3 +69,22 @@ Deploy the contents of the ./dapp folder
 * [Solidity Language Reference](http://solidity.readthedocs.io/en/v0.4.24/)
 * [Ethereum Blockchain Explorer](https://etherscan.io/)
 * [Web3Js Reference](https://github.com/ethereum/wiki/wiki/JavaScript-API)
+
+## For Fresh Start
+
+Blow away the node_modules folder
+
+Delete the package-lock.json.
+
+install Git Bash. You have follow the installation guide to the exact step https://www.stanleyulili.com/git/how-to-install-git-bash-on-windows/
+
+Restart your visual studio code
+
+Downgrade the zeppelin by executing this command below
+npm i openzeppelin-solidity@2.0 --save
+
+Install web3 by executing this command. npm install --save web3
+
+Run --> NPM Install
+
+Run --> Truffle Compile
