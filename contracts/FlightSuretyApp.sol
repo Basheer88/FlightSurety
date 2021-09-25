@@ -1,4 +1,5 @@
-pragma solidity ^0.4.25;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.4.24;
 
 // It's important to avoid vulnerabilities due to numeric overflow bugs
 // OpenZeppelin's SafeMath library, when used correctly, protects agains such bugs
@@ -170,8 +171,6 @@ contract FlightSuretyApp {
             success = flightSuretyData.registerAirline(airAddress, airName);
             counter++;
             airlineAddress.push(airAddress);
-            //uint256 cc = airlineAddress.length;
-            //return (success, 0);
             voteCount[airAddress] = counter;
             return (success, counter);
         }
@@ -182,14 +181,12 @@ contract FlightSuretyApp {
             for(uint i=0; i< counter; i++){
                 vo = randVote(airlineAddress[i]);
                 if(vo){
-                    //votes.add(1);
                     votes++;
                 }
             }
             //  require(votes>=(counter/2),"airlines voted to reject you");
             if(votes>=(counter/2)) {
                 success = flightSuretyData.registerAirline(airAddress, airName);
-                //counter.add(1);
                 counter++;
                 airlineAddress.push(airAddress);
                 voteCount[airAddress] = votes;
@@ -404,8 +401,6 @@ contract FlightSuretyApp {
     }
 
 
-
-
     // Called by oracle when a response is available to an outstanding request
     // For the response to be accepted, there must be a pending request that is open
     // and matches one of the three Indexes randomly assigned to the oracle at the
@@ -439,20 +434,6 @@ contract FlightSuretyApp {
             processFlightStatus(airline, flight, timestamp, statusCode);
         }
     }
-
-/*
-    function getFlightKey
-                        (
-                            address airline,
-                            string flight,
-                            uint256 timestamp
-                        )
-                        pure
-                        internal
-                        returns(bytes32) 
-    {
-        return keccak256(abi.encodePacked(airline, flight, timestamp));
-    }*/
 
     // Returns array of three non-duplicating integers from 0-9
     function generateIndexes
